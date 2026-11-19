@@ -51,15 +51,14 @@ jobs:
             build 2>&1 | tee "$build_log" | xcbeautify --renderer github-actions
           ./buildscripts/fail_on_warnings.sh "$build_log"
 
-      - name: Ad hoc sign and package
+      - name: Verify signature and package
         shell: bash
         run: |
           set -euo pipefail
           app="${RUNNER_TEMP}/DerivedData/Build/Products/Release/Vigie.app"
           test -d "$app"
-          codesign --force --deep --sign - "$app"
-          codesign --force --sign - --entitlements Mac/Perso/Vigie.entitlements "$app"
           codesign --verify --deep --strict --verbose=2 "$app"
+          codesign -d --entitlements - "$app"
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$app/Contents/Info.plist"
           mkdir -p dist
           ditto -c -k --keepParent "$app" dist/Vigie.zip

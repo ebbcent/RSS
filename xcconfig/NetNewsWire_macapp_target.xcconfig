@@ -1,7 +1,8 @@
 #include "./common/NetNewsWire_codesigning_common.xcconfig"
 #include "./common/NetNewsWire_macapp_target_common.xcconfig"
 
-CODE_SIGN_ENTITLEMENTS = Mac/Resources/NetNewsWire$(DEVELOPER_ENTITLEMENTS).entitlements
+// VIGIE: droits propres (pas de sandbox, pas d'iCloud, pas de groupe d'app). Original : Mac/Resources/NetNewsWire$(DEVELOPER_ENTITLEMENTS).entitlements
+CODE_SIGN_ENTITLEMENTS = Mac/Perso/Vigie.entitlements
 // VIGIE: identité propre au fork perso (ne pas mélanger avec NetNewsWire officiel).
 // PRODUCT_MODULE_NAME reste NetNewsWire : le dictionnaire AppleScript (.sdef) en dépend.
 PRODUCT_BUNDLE_IDENTIFIER = fr.ebbcent.Vigie$(BUNDLE_ID_SUFFIX)
