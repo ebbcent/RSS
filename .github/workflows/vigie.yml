@@ -1,4 +1,4 @@
-# VIGIE: compile l'app Mac perso à chaque push sur `perso` et la fournit en téléchargement.
+# VIGIE: compile l'app Mac perso à chaque push sur `perso` et la fournit en téléchargement. (Vigie)
 name: Vigie
 
 on:
