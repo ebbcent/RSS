@@ -192,6 +192,7 @@ private extension TimelineViewController {
 		}
 
 		menu.addSeparatorIfNeeded()
+		menu.addItem(VigieMenuController.shared.contextualExportMenuItem(articles)) // VIGIE
 		let shareButtonMenuItem = NSMenuItem(title: NSLocalizedString("Share…", comment: "Share…"), action: #selector(showShareSheet(_:)), keyEquivalent: "")
 		shareButtonMenuItem.target = self
 		shareButtonMenuItem.representedObject = articles

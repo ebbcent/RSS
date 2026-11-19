@@ -2,6 +2,9 @@
 #include "./common/NetNewsWire_macapp_target_common.xcconfig"
 
 CODE_SIGN_ENTITLEMENTS = Mac/Resources/NetNewsWire$(DEVELOPER_ENTITLEMENTS).entitlements
-PRODUCT_BUNDLE_IDENTIFIER = $(ORGANIZATION_IDENTIFIER).NetNewsWire-Evergreen$(BUNDLE_ID_SUFFIX)
-PRODUCT_NAME = NetNewsWire
+// VIGIE: identité propre au fork perso (ne pas mélanger avec NetNewsWire officiel).
+// PRODUCT_MODULE_NAME reste NetNewsWire : le dictionnaire AppleScript (.sdef) en dépend.
+PRODUCT_BUNDLE_IDENTIFIER = fr.ebbcent.Vigie$(BUNDLE_ID_SUFFIX)
+PRODUCT_NAME = Vigie
 PRODUCT_MODULE_NAME = NetNewsWire
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) VIGIE SKIP_APP_GROUP_ACCESS

@@ -1,0 +1,80 @@
+# VIGIE: compile l'app Mac perso à chaque push sur `perso` et la fournit en téléchargement.
+name: Vigie
+
+on:
+  push:
+    branches:
+      - perso
+  workflow_dispatch:
+
+concurrency:
+  group: vigie-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Vigie (macOS)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Select Xcode
+        run: |
+          ls -d /Applications/Xcode*.app
+          if [ -d /Applications/Xcode_26.6.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
+          fi
+          xcodebuild -version
+
+      - name: Generate Secrets Sources
+        run: PROJECT_DIR="$GITHUB_WORKSPACE" ./buildscripts/updateSecrets.sh
+
+      - name: Build (Release)
+        shell: bash
+        run: |
+          set -euo pipefail
+          build_log="${RUNNER_TEMP}/vigie-build.log"
+          xcodebuild \
+            -project NetNewsWire.xcodeproj \
+            -scheme NetNewsWire \
+            -configuration Release \
+            -xcconfig .github/vigie-ci.xcconfig \
+            -destination "platform=macOS,arch=arm64" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            build 2>&1 | tee "$build_log" | xcbeautify --renderer github-actions
+          ./buildscripts/fail_on_warnings.sh "$build_log"
+
+      - name: Ad hoc sign and package
+        shell: bash
+        run: |
+          set -euo pipefail
+          app="${RUNNER_TEMP}/DerivedData/Build/Products/Release/Vigie.app"
+          test -d "$app"
+          codesign --force --deep --sign - "$app"
+          codesign --force --sign - --entitlements Mac/Perso/Vigie.entitlements "$app"
+          codesign --verify --deep --strict --verbose=2 "$app"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$app/Contents/Info.plist"
+          mkdir -p dist
+          ditto -c -k --keepParent "$app" dist/Vigie.zip
+
+      - name: Upload Vigie.app
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vigie
+          path: dist/Vigie.zip
+          retention-days: 30
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vigie-build-log
+          path: ${{ runner.temp }}/vigie-build.log
+          retention-days: 7

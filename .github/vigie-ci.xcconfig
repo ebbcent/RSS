@@ -1,0 +1,10 @@
+// VIGIE: réglages de compilation sur GitHub Actions (aucun compte Apple).
+// La signature ad hoc est faite après le build, dans le workflow.
+CODE_SIGNING_ALLOWED = NO
+CODE_SIGNING_REQUIRED = NO
+CODE_SIGN_IDENTITY =
+DEVELOPMENT_TEAM =
+PROVISIONING_PROFILE_SPECIFIER =
+ORGANIZATION_IDENTIFIER = fr.ebbcent
+DEVELOPER_ENTITLEMENTS = -dev
+EXCLUDED_SOURCE_FILE_NAMES = $(inherited) *.applescript

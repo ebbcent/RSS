@@ -162,6 +162,7 @@ let appName = "NetNewsWire"
 		// Load now, while the app bundle is readable. A translocated app that gets moved can’t read it later.
 		_ = MainWindowKeyboardHandler.shared
 
+		#if !VIGIE // VIGIE: pas de mises à jour Sparkle (elles installeraient NetNewsWire officiel).
 		// Ensure the Sparkle feed URL is one of the two supported URLs.
 		// Default to the release builds URL from Info.plist.
 		if let infoDictionary = Bundle.main.infoDictionary,
@@ -182,6 +183,7 @@ let appName = "NetNewsWire"
 		} catch {
 			Self.logger.error("Failed to start software updater with error: \(error.localizedDescription)")
 		}
+		#endif
 
 		AppDefaults.registerDefaults()
 		let isFirstRun = AppDefaults.isFirstRun
@@ -276,11 +278,15 @@ let appName = "NetNewsWire"
 			debugMenuItem.menu?.removeItem(debugMenuItem)
 		}
 
+		#if !VIGIE // VIGIE: ne pas envoyer de rapports de plantage d'un fork à Ranchero.
 		Task {
 			if let crashReporter {
 				CrashReporter.check(crashReporter: crashReporter)
 			}
 		}
+		#endif
+
+		setUpVigie() // VIGIE: menus Obsidian, voir Mac/Perso/AppDelegate+Vigie.swift
 	}
 
 	func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([NSUserActivityRestoring]) -> Void) -> Bool {

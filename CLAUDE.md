@@ -1,5 +1,26 @@
 # CLAUDE.md
 
+## Règles du fork Vigie (prioritaires sur le reste de ce fichier)
+
+Ce dépôt (`github.com/ebbcent/RSS`) est le fork personnel de NetNewsWire (MIT) de Clément, historien, pas développeur Swift. Il produit **Vigie**, une app **Mac uniquement**, à usage perso. La version App Store de NetNewsWire reste sur iPhone.
+
+Objectifs : (1) une interface Mac plus belle, au goût de Clément ; (2) l'export direct d'un article vers le coffre Obsidian (`Claude/Lectures RSS`) en `.md`.
+
+Règles :
+
+1. **Branche `perso`** pour tout le travail. Elle part du **dernier tag de version Mac** (`mac-X.Y`), jamais de `main`. Pour mettre à jour : `git fetch upstream --tags`, puis rebaser ou fusionner `perso` sur le nouveau tag.
+2. **Identité séparée** : bundle `fr.ebbcent.Vigie`, nom `Vigie`, flag Swift `VIGIE`. Ne jamais revenir aux identifiants `com.ranchero.*`. Les mises à jour Sparkle sont coupées.
+3. **Ne pas toucher au code iOS** : `iOS/`, `Widget/`, cibles iOS et leurs xcconfig. Attention, `Shared/` est compilé aussi pour iOS : on n'y ajoute rien.
+4. **Petites modifications.** Le nouveau code va dans des **fichiers séparés sous `Mac/Perso/`** ; ce dossier est un groupe synchronisé, donc ajouté automatiquement à la cible Mac. Une retouche d'un fichier amont se limite à quelques lignes, marquées `// VIGIE`.
+5. **Jamais de modification dans les storyboards ni les `.xib`.** Les menus, éléments et styles sont ajoutés en code.
+6. **Aucune pull request vers l'amont** (Ranchero-Software/NetNewsWire). Le remote `upstream` est en lecture seule.
+7. **Aucune suppression de fichier sans l'accord explicite de Clément.**
+8. Expliquer en français simple ; signaler ce qui n'a pas été compilé ou testé.
+
+Build local : `../SharedXcodeSettings/DeveloperSettings.xcconfig`, avec `ORGANIZATION_IDENTIFIER = fr.ebbcent` et `DEVELOPER_ENTITLEMENTS = -dev` (pas de sandbox). Puis `xcodebuild -project NetNewsWire.xcodeproj -scheme NetNewsWire -configuration Release -destination "platform=macOS,arch=arm64" build`.
+
+---
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Build and Development Commands

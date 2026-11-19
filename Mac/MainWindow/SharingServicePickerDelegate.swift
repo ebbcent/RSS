@@ -20,7 +20,7 @@ import RSCore
 	}
 
 	@MainActor func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, sharingServicesForItems items: [Any], proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService] {
-		let filteredServices = proposedServices.filter { $0.menuItemTitle != "NetNewsWire" }
+		let filteredServices = proposedServices.filter { $0.menuItemTitle != "NetNewsWire" && $0.menuItemTitle != "Vigie" } // VIGIE
 		return filteredServices + SharingServicePickerDelegate.customSharingServices(for: items, selectedHTML: selectedHTML)
 	}
 
@@ -29,7 +29,7 @@ import RSCore
 	}
 
 	@MainActor static func customSharingServices(for items: [Any], selectedHTML: String? = nil) -> [NSSharingService] {
-		let customServices: [SendToCommand] = [SendToMarsEditCommand(), SendToMicroBlogCommand()]
+		let customServices: [SendToCommand] = [SendToObsidianCommand(), SendToMarsEditCommand(), SendToMicroBlogCommand()] // VIGIE
 
 		return customServices.compactMap { (sendToCommand) -> NSSharingService? in
 
